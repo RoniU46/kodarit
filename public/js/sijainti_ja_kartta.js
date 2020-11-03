@@ -3,12 +3,40 @@ var longitude = 0;
 var olet_tassa;
 var kartta;
 
+var paikka_merkitty = 0;
+
 async function getData() {
   const response = await fetch('/api/paikat');
   const data = await response.json();
   console.log(data);
   tayta_paikkataulukko(data);
+  merkitsePaikat(data);
+  tyhjenna_paikkataulukko();
 }
+
+function merkitsePaikat(data) {
+  var kayty_paikka;
+
+  for (var i = 0; i < data.length; i++) {
+    kayty_paikka = L.marker([data[i].latitude, data[i].longitude]).addTo(kartta)
+    kayty_paikka.bindPopup("<b>" + data[i].paikka + "</b><br>" + data [i].arvostelu).openPopup();
+  }
+
+  if (paikka_merkitty ==0) {
+    olet_tassa = L.marker([latitude, longitude]).addTo(kartta);
+    olet_tassa.bindPopup("<b> Olet Tässä </b><br> Haluatko merkitä paikan?").openPopup();
+  }
+}
+
+function tyhjenna_paikkataulukko() {
+  var table = document.getElementById("paikkataulukko")
+
+  var rivien_maara = table.rows.length -1;
+  for (var i = 0; rivien_maara; i++) {
+    table.deleteRow(1);
+  }
+}
+
 function tayta_paikkataulukko(data) {
   var table = document.getElementById("paikkataulukko");
 
@@ -64,4 +92,9 @@ function laheta_arvostelu() {
 
   console.log("Paikka: " + paikka);
   console.log("Arvostelu: " + arvostelu);
+}
+
+function laheta_arvostelu() {
+  var paikka = document.getElementById("paikka").value;
+  var arvostelu = document.getElementById("arvostelu").value;
 }
