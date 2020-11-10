@@ -11,7 +11,6 @@ async function getData() {
   console.log(data);
   tayta_paikkataulukko(data);
   merkitsePaikat(data);
-  tyhjenna_paikkataulukko();
 }
 
 function merkitsePaikat(data) {
@@ -32,7 +31,7 @@ function tyhjenna_paikkataulukko() {
   var table = document.getElementById("paikkataulukko")
 
   var rivien_maara = table.rows.length -1;
-  for (var i = 0; rivien_maara; i++) {
+  for (var i = 0; i < rivien_maara; i++) {
     table.deleteRow(1);
   }
 }
@@ -97,4 +96,30 @@ function laheta_arvostelu() {
 function laheta_arvostelu() {
   var paikka = document.getElementById("paikka").value;
   var arvostelu = document.getElementById("arvostelu").value;
+
+
+  console.log('Laheta arvostelu paikka: ', paikka);
+  console.log('Laheta arvostelu arvostelu: ', arvostelu);
+
+  const data = {paikka, arvostelu, longitude, latitude};
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify(data)
+  };
+
+  console.log('Lahete arvostelu options', options);
+
+  fetch('/api/arvostelu', options).then(function(response) {
+    console.log(response)
+    if (response.status == 200) {
+      tyhjenna_paikkataulukko();
+      getData();
+      sulje_paikkatietolomake();
+    }
+  }, function(error) {
+    console.log(error.message);
+  })
 }
