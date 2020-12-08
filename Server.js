@@ -42,3 +42,4 @@ const paikat = [
 //})
 
 app.get('/api/paikat', db.haePaikat);
+app.post('/api/arvostelu', db.lisaaPaikka);
